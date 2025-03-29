@@ -21,7 +21,7 @@ export default defineConfig({
     strictPort: true, // 严格模式（端口被占用时直接报错）
     hmr: {
       // 热更新配置（如果通过 IPv6 访问，需设置 host）
-      host: 'pc.bronyahan.top' // 或具体的 IPv6 地址（如 ::1）
+      host: '' // 或具体的 IPv6 地址（如 ::1）
     }
   }
 })
