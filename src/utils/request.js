@@ -3,7 +3,7 @@ import { useTokenStore } from "@/store/token";
 import  router from '@/router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-const baseURL = "http://pc.bronyahan.top:8080";
+const baseURL = "";
 const instance = axios.create({ baseURL: baseURL });
 
 instance.interceptors.request.use(
