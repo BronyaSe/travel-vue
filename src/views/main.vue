@@ -105,7 +105,10 @@ const pushlogin =()=>{
     router.push("/login")
 }
 const pushcenter = ()=>{
-    router.push("/usercenter")
+    router.push({path:"/usercenter",query:{tab:'profile'}})
+}
+const pushFavorite = ()=>{
+    router.push({path:"/usercenter",query:{tab:'favorite'}})
 }
 
 const logoff = async()=>{
@@ -152,8 +155,7 @@ const itemroute=(itemId)=>{
                             <template #dropdown>
                                 <el-dropdown-menu>
                                     <el-dropdown-item @click="pushcenter()">个人中心</el-dropdown-item>
-                                    <el-dropdown-item>Action 2</el-dropdown-item>
-                                    <el-dropdown-item>Action 3</el-dropdown-item>
+                                    <el-dropdown-item @click="pushFavorite()">收藏夹</el-dropdown-item>
                                     <el-dropdown-item divided @click="logoff()">退出登录</el-dropdown-item>
                                 </el-dropdown-menu>
                                 </template>

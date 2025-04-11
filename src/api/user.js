@@ -24,12 +24,10 @@ export const userLoginservice = (user) => {
     return request.post("/user/login",params)
 }
 export const getUserService = (id) => {
-  const params = qs.stringify(id,{
-    encode: true,
-    indices: true,
-  })
-  return request.post("/user/getUser",params)
-}
+  return request.get("/user/getUser",{
+    params: { id: id },
+  });
+};
 export const userLogoff = () =>{
     return request.post("/user/logoff")
 }
@@ -39,4 +37,26 @@ export const userUpdatePwd=(date)=>{
     indices:true
   })
   return request.post("/user/updatepwd",params)
+}
+export const userUpdateInfo=(form,file)=>{
+  const formData = new FormData()
+  const jsonBlob = new Blob([JSON.stringify(form)], { type: "application/json" });
+  formData.append("user", jsonBlob);
+  if(file){
+    formData.append("file",file)
+  }
+  return request.post("/user/updateinfo", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  })
+}
+export const getUserFavoritesByPage = (page) => {
+  return request.get("/user/getFavoriteByPage", {params:page});
+}
+export const deleteUserFavorites = (id) => {
+  const params = {
+    id: id,
+  };
+  return request.delete("/user/deleteFavorite",{params});
 }

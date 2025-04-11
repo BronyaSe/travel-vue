@@ -4,6 +4,8 @@ import { computed, onMounted,reactive,ref } from 'vue';
 import { getRouteByIdService,getratingcountByIdService, routecommentLoadService } from '@/api/route';
 import { useTokenStore } from '@/store/token';
 import dayjs from 'dayjs'
+import { addfavoriteService } from '../api/route';
+import { ElMessage } from 'element-plus'
 const route = useRoute()
 
 //const id = route.params.id;
@@ -98,6 +100,16 @@ const loadData = async () => {
       }
     }
 
+const addFavorite = async () => {
+  const result = await addfavoriteService(item.id)
+  console.log(result.data)
+  if(result.data){
+    ElMessage.success('收藏成功')
+  }else{
+    ElMessage.error('已经收藏过了')
+  }
+}
+
 onMounted(() => {
   loadData()
 })
@@ -166,7 +178,9 @@ onMounted(() => {
           <!-- <div class="info-item">
             <span class="label">行程日期：</span>
           </div> -->
-          <el-button style="margin-left: 30%;" type="primary" size="large" round>我要订购</el-button>
+          <div style="display: flex;justify-content: space-between;">
+            <el-button @click="addFavorite" type="primary" size="large" round>收藏</el-button>
+          </div>
         </div>
       </el-col>
     </el-row>

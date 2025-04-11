@@ -1,9 +1,11 @@
 <script setup>
-import { ref, shallowRef, markRaw } from 'vue'
-import { User, Lock } from '@element-plus/icons-vue'
+import { ref, shallowRef, markRaw ,watch} from 'vue'
+import { User, Lock ,Star} from '@element-plus/icons-vue'
 import Profile from './Profile.vue'
 import Password from './Password.vue'
+import Favorite from './Favorite.vue'
 import { useTokenStore } from '@/store/token'
+import { useRoute } from 'vue-router'
 
 // 配置化菜单项
 const menuItems = [
@@ -18,20 +20,42 @@ const menuItems = [
     label: '修改密码',
     icon: markRaw(Lock),
     component: markRaw(Password)
+  },
+  {
+    key: 'favorite',
+    label: '我的收藏',
+    icon: markRaw(Star),
+    component: markRaw(Favorite)
   }
 ]
-
+const route = useRoute()
 // 响应式状态
-const activeMenu = ref(menuItems[0].key)
-const currentComponent = shallowRef(menuItems[0].component)
+const activeMenu = ref( route.query.tab || menuItems[0].key )
+const currentComponent = shallowRef(
+  menuItems.find(item => item.key === activeMenu.value)?.component || menuItems[0].component
+)
 
 // 菜单选择处理
 const handleMenuSelect = (key) => {
   const target = menuItems.find(item => item.key === key)
   if (target) {
     currentComponent.value = target.component
+    activeMenu.value = key
   }
 }
+
+// 监听路由参数变化，更新选中
+watch(() => route.query.tab, (newVal) => {
+  if(newVal) {
+    activeMenu.value = newVal
+    const target = menuItems.find(item => item.key === newVal)
+    if (target) {
+      currentComponent.value = target.component
+    }
+  }
+})
+
+
     const islogin = ref(false)
     const tokenStore = useTokenStore()
     if(tokenStore.token.length>0){

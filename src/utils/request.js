@@ -25,9 +25,8 @@ instance.interceptors.response.use(
     if(res.data.code==200){
       return res.data;
     }
-    if(res.data.code===500){
-      ElMessage.error('验证失效，请重新登陆')
-      router.push("/login")
+    else if(res.data.code===500){
+      ElMessage.error(res.data.msg)
     }
     ElMessage.error('服务异常')
     return Promise.reject(res.data)

@@ -21,3 +21,13 @@ export const routecommentLoadService = (page) =>{
   });
   return request.post("/route/GetRouteComment", params);
 }
+export const addfavoriteService = (routeId) => {
+  const formdata = {
+    routeId: routeId,
+  };
+  const params = qs.stringify(formdata, {
+    encode: true,
+    indices: true,
+  });
+  return request.post("/route/addfavorite", params);
+}
