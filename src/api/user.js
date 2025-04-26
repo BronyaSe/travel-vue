@@ -29,7 +29,7 @@ export const getUserService = (id) => {
   });
 };
 export const userLogoff = () =>{
-    return request.post("/user/logoff")
+    return request.post("/user/logoff",null,{ skipGlobalError: true })
 }
 export const userUpdatePwd=(date)=>{
   const params = qs.stringify(date,{

@@ -1,6 +1,6 @@
 <script setup>
 import 'element-plus/dist/index.css'
-import { ElNotification } from 'element-plus'
+import { ElMessage, ElNotification } from 'element-plus'
 import { ref,onMounted, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -111,18 +111,16 @@ const pushFavorite = ()=>{
     router.push({path:"/usercenter",query:{tab:'favorite'}})
 }
 
-const logoff = async()=>{
-    try{
-        await userLogoff()
-        tokenStore.removeToken()
-        islogin.value=false
-    }catch(error){
-        ElNotification({
-    title: '',
-    message: error.message ? error.message : "退出失败",
-    type: 'warning',
-  })
-    }
+const logoff = async () => {
+  try {
+    await userLogoff();
+  } catch (error) {
+    // 可在此处忽略401错误，不做全局错误提示
+  } finally {
+    tokenStore.removeToken();
+    ElMessage.success('退出登录成功！');
+    islogin.value = false;
+  }
 }
 
 const itemroute=(itemId)=>{
@@ -141,7 +139,7 @@ const itemroute=(itemId)=>{
             <el-col :span="4" style="display: flex;align-items: center;">
                 <div class="logo"></div>
                     <span style="font-size: 20px;margin-top: 10px;font-family: Inter, 'Helvetica Neue', Helvetica, 'PingFang SC',
-  'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;">你要撞大运了</span>
+  'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;">云途旅程</span>
             </el-col>
             <el-col :span="8" >
                 <div v-if="islogin" class="userinfo">

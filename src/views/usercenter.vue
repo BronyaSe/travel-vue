@@ -1,14 +1,38 @@
-<script setup>
-import { ref, shallowRef, markRaw ,watch} from 'vue'
-import { User, Lock ,Star} from '@element-plus/icons-vue'
+<script setup lang="ts">
+import { computed, ref, shallowRef, markRaw, watch } from 'vue'
+import { User, Lock, Star, Setting } from '@element-plus/icons-vue'
 import Profile from './Profile.vue'
 import Password from './Password.vue'
 import Favorite from './Favorite.vue'
-import { useTokenStore } from '@/store/token'
+import EditDetail from './EditDetail.vue' // 管理员专用页面
+import { useTokenStore } from '../store/token'
 import { useRoute } from 'vue-router'
+import { jwtDecode } from 'jwt-decode';
 
-// 配置化菜单项
-const menuItems = [
+
+// 定义菜单项类型
+interface MenuItem {
+  key: string,
+  label: string,
+  icon: any,
+  component: any
+}
+
+const tokenStore = useTokenStore()
+
+// 根据token解析角色信息（假定token中含有role字段）
+const userRole = computed(() => {
+  if (!tokenStore.token) return null
+  try {
+    const decoded: any = jwtDecode(tokenStore.token)
+    return decoded.role
+  } catch (error) {
+    return null
+  }
+})
+
+// 定义普通用户的菜单
+const baseMenu: MenuItem[] = [
   {
     key: 'profile',
     label: '个人资料',
@@ -28,16 +52,35 @@ const menuItems = [
     component: markRaw(Favorite)
   }
 ]
+
+// 定义管理员额外菜单项
+const adminExtraMenu: MenuItem[] = [
+  {
+    key: 'EditDetail',
+    label: '管理项目',
+    icon: markRaw(Setting),
+    component: markRaw(EditDetail)
+  }
+]
+
+// 根据解析角色动态生成菜单项
+const menuItems = computed<MenuItem[]>(() => {
+  if (userRole.value === 'ADMIN') {
+    return [...baseMenu, ...adminExtraMenu]
+  } else {
+    return baseMenu
+  }
+})
+
 const route = useRoute()
-// 响应式状态
-const activeMenu = ref( route.query.tab || menuItems[0].key )
+const activeMenu = ref( route.query.tab || menuItems.value[0].key )
 const currentComponent = shallowRef(
-  menuItems.find(item => item.key === activeMenu.value)?.component || menuItems[0].component
+  menuItems.value.find(item => item.key === activeMenu.value)?.component || menuItems.value[0].component
 )
 
 // 菜单选择处理
-const handleMenuSelect = (key) => {
-  const target = menuItems.find(item => item.key === key)
+const handleMenuSelect = (key: string) => {
+  const target = menuItems.value.find(item => item.key === key)
   if (target) {
     currentComponent.value = target.component
     activeMenu.value = key
@@ -47,20 +90,18 @@ const handleMenuSelect = (key) => {
 // 监听路由参数变化，更新选中
 watch(() => route.query.tab, (newVal) => {
   if(newVal) {
-    activeMenu.value = newVal
-    const target = menuItems.find(item => item.key === newVal)
+    activeMenu.value = newVal as string
+    const target = menuItems.value.find(item => item.key === newVal)
     if (target) {
       currentComponent.value = target.component
     }
   }
 })
 
-
-    const islogin = ref(false)
-    const tokenStore = useTokenStore()
-    if(tokenStore.token.length>0){
-        islogin.value=true
-    }
+const islogin = ref(false)
+if(tokenStore.token && tokenStore.token.length>0){
+    islogin.value = true
+}
 </script>
 
 <template>
@@ -90,9 +131,8 @@ watch(() => route.query.tab, (newVal) => {
       </el-main>
     </el-container>
   </div>
-  </template>
+</template>
 
-  
 <style scoped>
 .settings-container {
   height: 100vh;

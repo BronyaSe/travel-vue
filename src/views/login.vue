@@ -165,7 +165,7 @@ const login = () =>{
                 <div class="left_logo">
                     <div class="logo"></div>
                     <span style="display: flex;align-items: center;font-size: 30px;font-family: Inter, 'Helvetica Neue', Helvetica, 'PingFang SC',
-  'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;">你要撞大运了</span>
+  'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;">云途旅程</span>
                 </div>
 
                 <div class="right_more">
